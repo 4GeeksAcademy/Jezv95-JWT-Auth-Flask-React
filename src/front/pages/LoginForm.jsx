@@ -5,6 +5,7 @@ import storeReducer from "../store.js";
 import { Navigate } from "react-router-dom";
 
 
+
 const LoginForm = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -24,7 +25,7 @@ const LoginForm = () => {
                       "password": password,
                        })
         };
-        fetch('https://humble-space-sniffle-wr774gjg5v54h59j9-3001.app.github.dev/api/login', requestOptions)
+        fetch(import.meta.env.VITE_BACKEND_URL + '/api/login', requestOptions)
         .then((response)=> {
             console.log(response);
             if(response.status == 200){

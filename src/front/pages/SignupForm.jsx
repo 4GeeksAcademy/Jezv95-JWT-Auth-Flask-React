@@ -4,8 +4,8 @@ const SignupForm = () => {
     const [inputEmail, setinputEmail] = useState('')
     const [inputPassword, setinputPassword] = useState('')
 
-function addUser(){
-
+function addUser(e){
+        e.preventDefault()
         const requestOptions={
             method: 'POST',
             headers:{'Content-Type':'application/json'},
@@ -14,7 +14,7 @@ function addUser(){
                       "password": inputPassword,
                 })
         };
-        fetch('https://humble-space-sniffle-wr774gjg5v54h59j9-3001.app.github.dev/api/signup', requestOptions)
+        fetch(import.meta.env.VITE_BACKEND_URL + '/api/signup', requestOptions)
         .then((response)=> response.json())
         setinputEmail('')
         setinputPassword('')
@@ -23,7 +23,7 @@ function addUser(){
 
 return(
     <>
-    <form className='container'>
+    <form className='container' onSubmit={addUser}>
      <div className="mb-3">
         <label for="exampleFormControlInput1" className="form-label">Email</label>
         <input type="text" value={inputEmail} onChange={(e) => setinputEmail(e.target.value)} className="form-control" id="exampleFormControlInput1" placeholder="Enter Email"/>
@@ -36,7 +36,7 @@ return(
         <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
         <label className="form-check-label" for="exampleCheck1">Check me out</label>
     </div>
-    <button type="submit" onClick={addUser} className="btn btn-primary">Add user</button>
+    <button type="submit" className="btn btn-primary">Add user</button>
     </form>
 </>
 );
