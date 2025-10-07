@@ -43,7 +43,7 @@ const SignupForm = () => {
                 console.log(data)
                 localStorage.setItem("token", data.access_token);
                 dispatch({ type: "set_auth", payload: true })
-                navigate("/");
+                navigate("/private");
             }
         );
     }
@@ -69,9 +69,9 @@ const SignupForm = () => {
                 </div>
 
                 <div className="d-flex justify-content-around">
-                    <button type="submit" onClick={sendData} className="btn btn-custom">Submit</button>
+                    <button type="submit" onClick={sendData} className="text-light btn btn-success">Submit</button>
                     <Link to="/login_user">
-                        <button className="btn btn-custom">Log In as user</button>
+                        <button className="text-light btn btn-primary">Log In as user</button>
                     </Link>
                 </div>
                 

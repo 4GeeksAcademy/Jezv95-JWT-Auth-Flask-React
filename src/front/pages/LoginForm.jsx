@@ -34,7 +34,7 @@ const LoginForm = () => {
 
       dispatch({ type: "set_auth", payload: {...data.user,token:data.access_token  } });
       setError('');
-      navigate("/");
+      navigate("/private");
 
     } catch (err) {
       console.error(err);
@@ -85,7 +85,7 @@ const LoginForm = () => {
 
 
                                <div className="d-flex justify-content-center">
-                                    <button type="submit" onClick={sendData} className="text-light orange-primari">
+                                    <button type="submit" onClick={sendData} className="text-light btn btn-success">
                                      Log in
                                     </button>
                                    
