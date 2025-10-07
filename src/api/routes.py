@@ -26,7 +26,20 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-@api.route("/login", methods=["POST"])
+@api.route('/users', methods=['GET'])
+def get_all_user():
+    all_users = User.query.all()
+    results = list(map(lambda user: user.serialize(), all_users))
+    return jsonify(results), 200
+
+@api.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return {"error-msg": "enter a valid user"}, 400
+    return jsonify(user.serialize()), 200
+
+@api.route('/login', methods=["POST"])
 def login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
@@ -39,18 +52,24 @@ def login():
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
 
-@api.route("/signup", methods=["POST"])
-def sign_up():
+
+@api.route('/signup', methods=['POST'])
+def signup():
     body = request.get_json()
-
     user = User.query.filter_by(email=body["email"]).first()
-
     if user:
         return jsonify({"msg": "user already exist"}), 401
 
-    user = User(email=body["email"], password=body["password"], is_active=True)
+    user = User(
+        email=body["email"],
+        password=body["password"]
+    )
     db.session.add(user)
     db.session.commit()
+
+    access_token = create_access_token(identity=body["email"])
+    return jsonify(access_token=access_token), 200
+        
 
 @api.route('/private', methods=['GET'])
 @jwt_required()

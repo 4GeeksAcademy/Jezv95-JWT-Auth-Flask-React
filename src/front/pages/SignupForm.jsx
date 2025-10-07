@@ -1,45 +1,86 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from "react";
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { Link, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const SignupForm = () => {
-    const [inputEmail, setinputEmail] = useState('')
-    const [inputPassword, setinputPassword] = useState('')
+   const navigate = useNavigate();
 
-function addUser(e){
+    const [error, setError] = useState('');
+    const { store, dispatch } = useGlobalReducer()
+
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    function sendData(e) {
         e.preventDefault()
-        const requestOptions={
+        console.log('send data')
+        console.log(email, password)
+
+        const requestOptions = {
             method: 'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({
-                      "email": inputEmail,
-                      "password": inputPassword,
-                })
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify(
+                {
+                    "email": email,
+                    "password": password
+                }
+            )
         };
         fetch(import.meta.env.VITE_BACKEND_URL + '/api/signup', requestOptions)
-        .then((response)=> response.json())
-        setinputEmail('')
-        setinputPassword('')
-        
-       }
+            .then(response => {
+                console.log(response)
+                console.log(response.status)
+                if (response.status !== 200) {
+                    setError('Invalid email or password.');
+                    throw new Error('Signup failed');
+                } else {
+                    setError('');
+                }
+                return response.json()
+            })
+            .then(data => {
+                console.log(data)
+                localStorage.setItem("token", data.access_token);
+                dispatch({ type: "set_auth", payload: true })
+                navigate("/");
+            }
+        );
+    }
 
-return(
-    <>
-    <form className='container' onSubmit={addUser}>
-     <div className="mb-3">
-        <label for="exampleFormControlInput1" className="form-label">Email</label>
-        <input type="text" value={inputEmail} onChange={(e) => setinputEmail(e.target.value)} className="form-control" id="exampleFormControlInput1" placeholder="Enter Email"/>
-        </div>
-     <div className="mb-3">
-        <label for="exampleFormControlInput1" className="form-label">Password</label>
-        <input type="password" value={inputPassword} onChange={(e) => setinputPassword(e.target.value)} className="form-control" id="exampleFormControlInput1" placeholder="Enter Password"/>
-        </div>
-    <div className="mb-3 form-check">
-        <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-        <label className="form-check-label" for="exampleCheck1">Check me out</label>
+    return (
+    <div className="container text-center mt-5">
+        {error && <div className="alert alert-danger" role="alert">{error}</div>}
+        <>
+        {store.auth ? <Navigate to='/private' />
+        :
+        <>
+            <h1>Register here</h1>
+            <form className="w-50 mx-auto">
+                <div className="mb-3">
+                    <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                    <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
+                    <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="form-control" id="exampleInputPassword1" />
+                </div>
+
+                <div className="d-flex justify-content-around">
+                    <button type="submit" onClick={sendData} className="btn btn-custom">Submit</button>
+                    <Link to="/login_user">
+                        <button className="btn btn-custom">Log In as user</button>
+                    </Link>
+                </div>
+                
+            </form>
+        </>
+    }            
+        </>
     </div>
-    <button type="submit" className="btn btn-primary">Add user</button>
-    </form>
-</>
-);
-};
+    );
+}
 
 export default SignupForm;
