@@ -85,10 +85,14 @@ const LoginForm = () => {
 
 
                                <div className="d-flex justify-content-center">
-                                    <button type="submit" onClick={sendData} className="text-light btn btn-success">
+                                    <button type="submit" onClick={sendData} className="text-light btn btn-success m-2">
                                      Log in
                                     </button>
-                                   
+
+                                    <Link to="/signup">
+                                      <button className="text-light btn btn-primary m-2">Sign Up</button>
+                                    </Link>
+                                
                                     </div>
 
                             </form>

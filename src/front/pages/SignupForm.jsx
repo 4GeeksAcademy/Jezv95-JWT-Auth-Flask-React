@@ -70,7 +70,7 @@ const SignupForm = () => {
 
                 <div className="d-flex justify-content-around">
                     <button type="submit" onClick={sendData} className="text-light btn btn-success">Submit</button>
-                    <Link to="/login_user">
+                    <Link to="/login">
                         <button className="text-light btn btn-primary">Log In as user</button>
                     </Link>
                 </div>
